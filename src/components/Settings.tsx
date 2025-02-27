@@ -10,6 +10,9 @@ import {
   Tab,
   IconButton,
   Input,
+  Snackbar,
+  Alert,
+  FormHelperText,
 } from '@mui/material';
 import { Pencil } from 'lucide-react';
 import styled from 'styled-components';
@@ -39,14 +42,14 @@ const StyledTab = styled(Tab)`
   }
 `;
 const StyledTextField = styled(Input)`
-  border: 1px solid #DFEAF2;
+  border: 1px solid #dfeaf2;
   border-radius: 1rem;
-  color: #718EBF;
+  color: #718ebf;
   padding: 0.5rem 0.8rem;
   &::after {
     display: none;
   }
-    &::before {
+  &::before {
     display: none;
   }
 `;
@@ -65,6 +68,56 @@ const Settings = () => {
     city: '',
     country: '',
   });
+
+  const [openAlert, setOpenAlert] = useState(false);
+
+  // State to track validation errors
+  const [errors, setErrors] = useState({
+    name: '',
+    username: '',
+    email: '',
+    dateOfBirth: '',
+    postalCode: '',
+  });
+
+  const validateForm = () => {
+    const newErrors: any = {};
+    let isValid = true;
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+      isValid = false;
+    }
+
+    if (!formData.username.trim()) {
+      newErrors.username = 'Username is required';
+      isValid = false;
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+      isValid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Invalid email format';
+      isValid = false;
+    }
+
+    if (!formData.dateOfBirth.trim()) {
+      newErrors.dateOfBirth = 'Date of Birth is required';
+      isValid = false;
+    }
+
+    if (!formData.postalCode.trim()) {
+      newErrors.postalCode = 'Postal Code is required';
+      isValid = false;
+    } else if (!/^\d{4,6}$/.test(formData.postalCode)) {
+      newErrors.postalCode = 'Invalid postal code (4-6 digits)';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
 
   React.useEffect(() => {
     if (user) {
@@ -95,7 +148,9 @@ const Settings = () => {
     };
 
   const handleSave = () => {
+    if (!validateForm()) return; // Stop if validation fails
     updateUserProfile(formData);
+    setOpenAlert(true);
   };
 
   if (loading) {
@@ -156,7 +211,11 @@ const Settings = () => {
                       fullWidth
                       value={formData.name}
                       onChange={handleInputChange('name')}
+                      error={!!errors.name}
                     />
+                    {errors.name && (
+                      <FormHelperText error>{errors.name}</FormHelperText>
+                    )}
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <Typography variant='subtitle2' sx={{ mb: 1 }}>
@@ -166,7 +225,11 @@ const Settings = () => {
                       fullWidth
                       value={formData.username}
                       onChange={handleInputChange('username')}
+                      error={!!errors.username}
                     />
+                    {errors.username && (
+                      <FormHelperText error>{errors.username}</FormHelperText>
+                    )}
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <Typography variant='subtitle2' sx={{ mb: 1 }}>
@@ -177,7 +240,11 @@ const Settings = () => {
                       type='email'
                       value={formData.email}
                       onChange={handleInputChange('email')}
+                      error={!!errors.email}
                     />
+                    {errors.email && (
+                      <FormHelperText error>{errors.email}</FormHelperText>
+                    )}
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <Typography variant='subtitle2' sx={{ mb: 1 }}>
@@ -198,7 +265,11 @@ const Settings = () => {
                       fullWidth
                       value={formData.dateOfBirth}
                       onChange={handleInputChange('dateOfBirth')}
+                      error={!!errors.dateOfBirth}
                     />
+                    {errors.dateOfBirth && (
+                      <FormHelperText error>{errors.dateOfBirth}</FormHelperText>
+                    )}
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <Typography variant='subtitle2' sx={{ mb: 1 }}>
@@ -265,7 +336,7 @@ const Settings = () => {
                   '&:hover': {
                     bgcolor: 'black',
                   },
-                  paddingX: 8
+                  paddingX: 8,
                 }}
                 onClick={handleSave}
               >
@@ -287,6 +358,20 @@ const Settings = () => {
           </Box>
         </TabPanel>
       </Paper>
+      <Snackbar
+        open={openAlert}
+        autoHideDuration={3000}
+        onClose={() => setOpenAlert(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert
+          onClose={() => setOpenAlert(false)}
+          severity='success'
+          sx={{ width: '100%' }}
+        >
+          Profile updated successfully!
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

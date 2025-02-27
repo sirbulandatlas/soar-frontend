@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Paper, Typography, Avatar, Button } from '@mui/material';
+import { Box, Paper, Typography, Avatar, Button, Snackbar, Alert } from '@mui/material';
 import SectionHeading from './SectionHeading';
 import styled, { css } from 'styled-components';
 import { SendIcon } from 'lucide-react';
@@ -93,7 +93,20 @@ const QuickTransfer = () => {
   const [amount, setAmount] = useState('');
   const [selectedContact, setSelectedContact] = useState<number | null>(null);
   const { contacts, loading } = useAppContext();
+  const [openAlert, setOpenAlert] = useState(false);
+  const [openErrorAlert, setOpenErrorAlert] = useState(false);
 
+
+  const handleTransfer = () => {
+    // updateUserProfile(formData);
+
+    console.log(isNaN(Number(amount)))
+    if (isNaN(Number(amount))) {
+      setOpenErrorAlert(true);
+      return 
+    }
+    setOpenAlert(true);
+  };
   if (loading) {
     return <Box>Loading contacts...</Box>;
   }
@@ -148,6 +161,7 @@ const QuickTransfer = () => {
                   },
                 }}
                 endIcon={<SendIcon />}
+                onClick={handleTransfer}
               >
                 Send
               </SendButton>
@@ -155,6 +169,34 @@ const QuickTransfer = () => {
           </AmountContainer>
         </Box>
       </StyledPaper>
+      <Snackbar
+        open={openAlert}
+        autoHideDuration={3000}
+        onClose={() => setOpenAlert(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert
+          onClose={() => setOpenAlert(false)}
+          severity='success'
+          sx={{ width: '100%' }}
+        >
+          Transfered Succcesfully!
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={openErrorAlert}
+        autoHideDuration={3000}
+        onClose={() => setOpenErrorAlert(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert
+          onClose={() => setOpenErrorAlert(false)}
+          severity='error'
+          sx={{ width: '100%' }}
+        >
+          Invalid Transfer Amount!
+        </Alert>
+      </Snackbar>
     </>
   );
 };
