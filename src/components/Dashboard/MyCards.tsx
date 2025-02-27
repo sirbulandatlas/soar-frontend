@@ -6,7 +6,7 @@ import MasterCardLogoLight from '../../assets/icons/mastercard-light.svg';
 import SectionHeading from './SectionHeading';
 import { useAppContext } from '../../context/AppContext';
 
-const CardContainer = styled(Paper)<{ dark?: boolean }>`
+const CardContainer = styled(Paper)<{ dark?: string }>`
   fontFamily: 'Lato';
   padding: 24px;
   border-radius: 0;
@@ -14,10 +14,10 @@ const CardContainer = styled(Paper)<{ dark?: boolean }>`
   border-top-left-radius: 25px;
   border-top-right-radius: 25px;
   background: ${({ dark }) =>
-    dark
+    dark === 'true'
       ? 'linear-gradient(107.38deg, #5B5A6F 2.61%, #000000 101.2%)'
       : '#FFFFFF'}; 
-  color: ${({ dark }) => (dark ? 'white' : '#343C6A')}; 
+  color: ${({ dark }) => (dark === 'true' ? 'white' : '#343C6A')}; 
   overflow: hidden;
   &::before: {
     content: "";
@@ -32,26 +32,26 @@ const CardContainer = styled(Paper)<{ dark?: boolean }>`
   },
 `;
 
-const CardNumberContainer = styled(Paper)<{ dark?: boolean }>`
+const CardNumberContainer = styled(Paper)<{ dark?: string }>`
   background: ${({ dark }) =>
-    dark
+    dark === 'true'
       ? 'linear-gradient(107.38deg, #5b5a6f 2.61%, #000000 101.2%)'
       : '#FFFFFF'};
   border-radius: 0px;
   border-bottom-left-radius: 25px;
   border-bottom-right-radius: 25px;
   padding: 12px 24px 12px 24px;
-  color: ${({ dark }) => (dark ? 'white' : '#343C6A')};
+  color: ${({ dark }) => (dark === 'true' ? 'white' : '#343C6A')};
   display: flex;
   justify-content: space-between;
   ${({ dark }) =>
-    !dark &&
+    dark !== 'true' &&
     css`
       border-top: solid 1px #dfeaf2;
     `}
 `;
 
-const CardDetails = styled(Box)<{ dark?: boolean }>`
+const CardDetails = styled(Box)<{ dark?: string }>`
   h4 {
     font-family: 'Lato';
     font-size: 1.25rem;
@@ -65,7 +65,7 @@ const CardDetails = styled(Box)<{ dark?: boolean }>`
     font-size: 0.75rem;
     margin-bottom: 0;
     ${({ dark }) =>
-      !dark &&
+      dark !== 'true' &&
       css`
         color: #718ebf;
       `}
@@ -85,11 +85,11 @@ const MyCards = () => {
       <Grid container spacing={3}>
         {cards.map((card, index) => (
           <Grid item xs={12} md={6} key={card.id}>
-            <CardContainer elevation={0} dark={index % 2 === 0}>
+            <CardContainer elevation={0} dark={(index % 2 === 0).toString()}>
               <Box
                 sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}
               >
-                <CardDetails dark={index % 2 === 0}>
+                <CardDetails dark={(index % 2 === 0).toString()}>
                   <Typography variant='h6' sx={{ mb: 3 }}>
                     Balance
                   </Typography>
@@ -100,7 +100,7 @@ const MyCards = () => {
                 <img src={index % 2 === 0 ? CardChip : CardChipLight} />
               </Box>
               <Box sx={{ display: 'flex', gap: 5 }}>
-                <CardDetails dark={index % 2 === 0}>
+                <CardDetails dark={(index % 2 === 0).toString()}>
                   <Typography variant='h6' sx={{ mb: 3 }}>
                     CARD HOLDER
                   </Typography>
@@ -108,7 +108,7 @@ const MyCards = () => {
                     {card.holder}
                   </Typography>
                 </CardDetails>
-                <CardDetails dark={index % 2 === 0}>
+                <CardDetails dark={(index % 2 === 0).toString()}>
                   <Typography variant='h6' sx={{ mb: 3 }}>
                     VALID THRU
                   </Typography>
@@ -118,7 +118,7 @@ const MyCards = () => {
                 </CardDetails>
               </Box>
             </CardContainer>
-            <CardNumberContainer dark={index % 2 === 0}>
+            <CardNumberContainer dark={(index % 2 === 0).toString()}>
               <Box>
                 <Typography variant='h6'>{card.number}</Typography>
               </Box>
