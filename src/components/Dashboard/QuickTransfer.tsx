@@ -3,6 +3,7 @@ import { Box, Paper, Typography, Avatar, Button } from '@mui/material';
 import SectionHeading from './SectionHeading';
 import styled, { css } from 'styled-components';
 import { SendIcon } from 'lucide-react';
+import { useAppContext } from '../../context/AppContext';
 
 const StyledPaper = styled(Paper)`
   padding: 24px;
@@ -87,33 +88,15 @@ const SendButton = styled(Button)`
   padding: 18px;
   text-transform: capitalize;
 `;
-const contacts = [
-  {
-    id: 1,
-    name: 'Liv Johnson',
-    role: 'Designer',
-    avatar:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=60',
-  },
-  {
-    id: 2,
-    name: 'Michael Chen',
-    role: 'Developer',
-    avatar:
-      'https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=60',
-  },
-  {
-    id: 3,
-    name: 'Emily Davis',
-    role: 'Manager',
-    avatar:
-      'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=60',
-  },
-];
 
 const QuickTransfer = () => {
   const [amount, setAmount] = useState('');
   const [selectedContact, setSelectedContact] = useState<number | null>(null);
+  const { contacts, loading } = useAppContext();
+
+  if (loading) {
+    return <Box>Loading contacts...</Box>;
+  }
 
   return (
     <>

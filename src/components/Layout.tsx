@@ -1,4 +1,4 @@
-import React, { useState, ReactNode } from 'react';
+import React, { useState, ReactNode, useEffect } from 'react';
 import {
   Box,
   AppBar,
@@ -17,9 +17,10 @@ import {
   Search as SearchIcon,
   Bell,
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import styled from 'styled-components';
+import { useAppContext } from '../context/AppContext';
 
 const DRAWER_WIDTH = 250;
 
@@ -109,6 +110,16 @@ const Layout = ({ children }: LayoutProps) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user, pageTitle, setPageTitle } = useAppContext();
+
+  useEffect(() => {
+    if (location.pathname === '/') {
+      setPageTitle('Overview');
+    } else if (location.pathname === '/settings') {
+      setPageTitle('Settings');
+    }
+  }, [location.pathname, setPageTitle]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -142,7 +153,7 @@ const Layout = ({ children }: LayoutProps) => {
             <MenuIcon />
           </IconButton>
           <HeaderText variant='h6'>
-            Overview
+            {pageTitle}
           </HeaderText>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Search>
@@ -178,7 +189,7 @@ const Layout = ({ children }: LayoutProps) => {
               >
                 <Avatar
                   sx={{ width: 32, height: 32 }}
-                  src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80'
+                  src={user?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80'}
                 />
               </IconButton>
             </Tooltip>

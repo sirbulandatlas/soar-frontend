@@ -7,8 +7,9 @@ import {
   BarElement,
   Title,
   Tooltip,
-  Legend,
+  Legend
 } from 'chart.js';
+import { useAppContext } from '../../context/AppContext';
 import SectionHeading from './SectionHeading';
 
 ChartJS.register(
@@ -36,7 +37,6 @@ const options = {
       },
     },
   },
-  // barThickness: 10,
   barPercentage: 0.4,
   scales: {
     x: {
@@ -53,25 +53,31 @@ const options = {
   maintainAspectRatio: false,
 };
 
-const data = {
-  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-  datasets: [
-    {
-      label: 'Withdrawals',
-      data: [1700, 1400, 1900, 1600, 2200, 1800, 2000],
-      backgroundColor: '#232323',
-      borderRadius: 8,
-    },
-    {
-      label: 'Deposits',
-      data: [2100, 1800, 2400, 1900, 2800, 2200, 2600],
-      backgroundColor: '#396AFF',
-      borderRadius: 8,
-    },
-  ],
-};
-
 const WeeklyActivity = () => {
+  const { weeklyActivity, loading } = useAppContext();
+
+  if (loading) {
+    return <Box>Loading weekly activity...</Box>;
+  }
+
+  const data = {
+    labels: weeklyActivity.labels,
+    datasets: [
+      {
+        label: 'Deposits',
+        data: weeklyActivity.deposits,
+        backgroundColor: '#4F46E5',
+        borderRadius: 8,
+      },
+      {
+        label: 'Withdrawals',
+        data: weeklyActivity.withdrawals,
+        backgroundColor: '#E5E7EB',
+        borderRadius: 8,
+      },
+    ],
+  };
+
   return (
     <>
       <SectionHeading>Weekly Activity</SectionHeading>

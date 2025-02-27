@@ -14,8 +14,10 @@ import {
   ShoppingBag,
   ArrowDownLeft,
   Coffee,
+  Music,
 } from 'lucide-react';
 import SectionHeading from './SectionHeading';
+import { useAppContext } from '../../context/AppContext';
 
 const StyledPaper = styled(Paper)`
   border-radius: 16px;
@@ -39,37 +41,21 @@ const RecentTransactionsList = styled(List)`
   padding-top: 4px;
 `
 
-const transactions = [
-  {
-    id: 1,
-    type: 'expense',
-    description: 'Online Store',
-    amount: -85.0,
-    date: '25 January 2025',
-    icon: ShoppingBag,
-    color: '#EF4444',
-  },
-  {
-    id: 2,
-    type: 'income',
-    description: 'Salary Deposit',
-    amount: 2850.0,
-    date: '23 January 2024',
-    icon: ArrowDownLeft,
-    color: '#10B981',
-  },
-  {
-    id: 3,
-    type: 'expense',
-    description: 'Coffee Shop',
-    amount: -12.5,
-    date: '23 January 2024',
-    icon: Coffee,
-    color: '#F59E0B',
-  },
-];
+// Map icon strings to actual components
+const iconMap = {
+  ShoppingBag,
+  ArrowDownLeft,
+  Coffee,
+  Music
+};
 
 const RecentTransactions = () => {
+  const { transactions, loading } = useAppContext();
+
+  if (loading) {
+    return <Box>Loading transactions...</Box>;
+  }
+
   return (
     <>
       <SectionHeading>Recent Transactions</SectionHeading>
@@ -77,7 +63,9 @@ const RecentTransactions = () => {
       <StyledPaper elevation={0}>
         <RecentTransactionsList>
           {transactions.map((transaction) => {
-            const Icon = transaction.icon;
+            // Get the icon component based on the icon string
+            const IconComponent = iconMap[transaction.icon as keyof typeof iconMap] || ShoppingBag;
+            
             return (
               <ListItem key={transaction.id}>
                 <ListItemIcon>
@@ -87,7 +75,7 @@ const RecentTransactions = () => {
                       color: transaction.color,
                     }}
                   >
-                    <Icon size={20} />
+                    <IconComponent size={20} />
                   </StyledAvatar>
                 </ListItemIcon>
                 <StyledListItemText

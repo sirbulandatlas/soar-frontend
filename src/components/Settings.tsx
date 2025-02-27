@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { Pencil } from 'lucide-react';
 import styled from 'styled-components';
+import { useAppContext } from '../context/AppContext';
 
 const TabPanel = ({ children, value, index, ...other }) => (
   <div
@@ -52,17 +53,34 @@ const StyledTextField = styled(Input)`
 
 const Settings = () => {
   const [tabValue, setTabValue] = useState(0);
+  const { user, updateUserProfile, loading } = useAppContext();
   const [formData, setFormData] = useState({
-    name: 'Charlene Reed',
-    username: 'Charlene Reed',
-    email: 'charlenereed@gmail.com',
-    dateOfBirth: '25 January 1990',
-    permanentAddress: 'San Jose, California, USA',
-    presentAddress: 'San Jose, California, USA',
-    postalCode: '45962',
-    city: 'San Jose',
-    country: 'USA',
+    name: '',
+    username: '',
+    email: '',
+    dateOfBirth: '',
+    permanentAddress: '',
+    presentAddress: '',
+    postalCode: '',
+    city: '',
+    country: '',
   });
+
+  React.useEffect(() => {
+    if (user) {
+      setFormData({
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        dateOfBirth: user.dateOfBirth,
+        permanentAddress: user.permanentAddress,
+        presentAddress: user.presentAddress,
+        postalCode: user.postalCode,
+        city: user.city,
+        country: user.country,
+      });
+    }
+  }, [user]);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -75,6 +93,14 @@ const Settings = () => {
         [field]: event.target.value,
       }));
     };
+
+  const handleSave = () => {
+    updateUserProfile(formData);
+  };
+
+  if (loading) {
+    return <Box>Loading user profile...</Box>;
+  }
 
   return (
     <Box sx={{ py: 3 }}>
@@ -101,7 +127,7 @@ const Settings = () => {
                   >
                     <Box sx={{ position: 'relative' }}>
                       <Avatar
-                        src='https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120'
+                        src={user?.avatar}
                         sx={{ width: 100, height: 100 }}
                       />
                       <IconButton
@@ -241,6 +267,7 @@ const Settings = () => {
                   },
                   paddingX: 8
                 }}
+                onClick={handleSave}
               >
                 Save
               </Button>

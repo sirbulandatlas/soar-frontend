@@ -2,6 +2,7 @@ import { Box, Paper, styled } from '@mui/material';
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import SectionHeading from './SectionHeading';
+import { useAppContext } from '../../context/AppContext';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -9,16 +10,6 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
   borderRadius: theme.spacing(2),
 }));
-const data = {
-  labels: ['Entertainment', 'Bill Expenses', 'Investment', 'Others'],
-  datasets: [
-    {
-      data: [30, 25, 35, 10],
-      backgroundColor: ['#4F46E5', '#10B981', '#F59E0B', '#6B7280'],
-      borderWidth: 0,
-    },
-  ],
-};
 
 const options = {
   plugins: {
@@ -35,6 +26,23 @@ const options = {
 };
 
 const ExpenseStatistics = () => {
+  const { expenseStats, loading } = useAppContext();
+
+  if (loading) {
+    return <Box>Loading expense statistics...</Box>;
+  }
+
+  const data = {
+    labels: expenseStats.map(stat => stat.category),
+    datasets: [
+      {
+        data: expenseStats.map(stat => stat.percentage),
+        backgroundColor: expenseStats.map(stat => stat.color),
+        borderWidth: 0,
+      },
+    ],
+  };
+
   return (
     <>
       <SectionHeading>Expense Statistics</SectionHeading>

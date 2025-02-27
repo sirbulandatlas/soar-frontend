@@ -4,6 +4,7 @@ import CardChipLight from '../../assets/icons/chip-card-light.svg';
 import MasterCardLogo from '../../assets/icons/mastercard.svg';
 import MasterCardLogoLight from '../../assets/icons/mastercard-light.svg';
 import SectionHeading from './SectionHeading';
+import { useAppContext } from '../../context/AppContext';
 
 const CardContainer = styled(Paper)<{ dark?: boolean }>`
   fontFamily: 'Lato';
@@ -71,26 +72,13 @@ const CardDetails = styled(Box)<{ dark?: boolean }>`
   }
 `;
 
-const cards = [
-  {
-    id: 1,
-    type: 'Visa',
-    number: '**** **** **** 4242',
-    holder: 'John Doe',
-    balance: 24500.5,
-    expiry: '12/25',
-  },
-  {
-    id: 2,
-    type: 'Mastercard',
-    number: '**** **** **** 5555',
-    holder: 'John Doe',
-    balance: 15750.75,
-    expiry: '09/24',
-  },
-];
-
 const MyCards = () => {
+  const { cards, loading } = useAppContext();
+
+  if (loading) {
+    return <Box>Loading cards...</Box>;
+  }
+
   return (
     <Box>
       <SectionHeading>My Cards</SectionHeading>

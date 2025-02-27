@@ -13,6 +13,7 @@ import {
 } from 'chart.js';
 import SectionHeading from './SectionHeading';
 import styled from 'styled-components';
+import { useAppContext } from '../../context/AppContext';
 
 ChartJS.register(
   CategoryScale,
@@ -26,8 +27,11 @@ ChartJS.register(
 );
 
 const StyledPaper = styled(Paper)`
-  padding: 19px;
+  padding: 32px;
   border-radius: 16px;
+  @media (min-width: 1280px) {
+    padding: 19px;
+  }
 `
 const options = {
   responsive: true,
@@ -51,21 +55,27 @@ const options = {
   maintainAspectRatio: false,
 };
 
-const data = {
-  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-  datasets: [
-    {
-      fill: true,
-      label: 'Balance',
-      data: [30000, 35000, 32000, 37000, 35000, 40000],
-      borderColor: '#4F46E5',
-      backgroundColor: 'rgba(79, 70, 229, 0.1)',
-      tension: 0.4,
-    },
-  ],
-};
-
 const BalanceHistory = () => {
+  const { balanceHistory, loading } = useAppContext();
+
+  if (loading) {
+    return <Box>Loading balance history...</Box>;
+  }
+
+  const data = {
+    labels: balanceHistory.labels,
+    datasets: [
+      {
+        fill: true,
+        label: 'Balance',
+        data: balanceHistory.values,
+        borderColor: '#4F46E5',
+        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+        tension: 0.4,
+      },
+    ],
+  };
+
   return (
     <>
       <SectionHeading>Balance History</SectionHeading>
